@@ -5,7 +5,6 @@ import com.wiki.framework.common.context.ThreadStore;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.function.Function;
 
 public interface TaskProxyBuilder {
 
