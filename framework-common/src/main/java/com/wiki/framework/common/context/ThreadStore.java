@@ -10,7 +10,7 @@ public class ThreadStore {
 
 	private transient static ThreadLocal<Map<String, String>> contextMap = new ThreadLocal<Map<String, String>>();
 
-	private static Map<String, String> getContextMap() {
+	public static Map<String, String> getContextMap() {
 		Map<String, String> map = contextMap.get();
 		if (map != null) {
 			return map;

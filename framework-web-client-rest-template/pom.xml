@@ -20,16 +20,21 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
-
-        <!--test-->
         <dependency>
             <groupId>com.wiki.framework</groupId>
             <artifactId>framework-ribbon-eureka</artifactId>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
+
+        <!--test-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.wiki.framework</groupId>
+            <artifactId>framework-system-context</artifactId>
             <scope>test</scope>
         </dependency>
         <!--test-->

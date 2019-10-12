@@ -15,6 +15,7 @@
         <module>framework-system-context</module>
         <module>framework-ribbon-eureka</module>
         <module>framework-web-client-rest-template</module>
+        <module>framework-web-starter-light</module>
     </modules>
 
     <properties>
@@ -47,7 +48,17 @@
             </dependency>
             <dependency>
                 <groupId>com.wiki.framework</groupId>
+                <artifactId>framework-mybatis</artifactId>
+                <version>${framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wiki.framework</groupId>
                 <artifactId>framework-web</artifactId>
+                <version>${framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wiki.framework</groupId>
+                <artifactId>framework-system-context</artifactId>
                 <version>${framework.version}</version>
             </dependency>
             <dependency>
@@ -56,9 +67,9 @@
                 <version>${framework.version}</version>
             </dependency>
             <dependency>
-                <groupId>p6spy</groupId>
-                <artifactId>p6spy</artifactId>
-                <version>3.0.0</version>
+                <groupId>com.wiki.framework</groupId>
+                <artifactId>framework-web-client-rest-template</artifactId>
+                <version>${framework.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

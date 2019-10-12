@@ -1,5 +1,6 @@
 package com.wiki.framework.web.client.rest.template.Proxy;
 
+import com.wiki.framework.common.context.ThreadStore;
 import com.wiki.framework.common.dto.ActionResult;
 import com.wiki.framework.web.client.rest.template.Proxy.test.service.ApplicationProxyDTO;
 import com.wiki.framework.web.client.rest.template.Proxy.test.service.OmpService;
@@ -31,6 +32,7 @@ public class ServiceProxyTest {
 
 	@Test
 	public void test1() {
+		ThreadStore.put("TM-Header-TenantId","2333");
 		List<String> strings = new ArrayList<>();
 		strings.add("edc");
 		strings.add("pv");

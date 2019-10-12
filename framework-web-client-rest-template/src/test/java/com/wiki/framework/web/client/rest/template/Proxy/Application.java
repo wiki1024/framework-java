@@ -13,12 +13,5 @@ import org.springframework.web.client.RestTemplate;
 @ServiceProxyScan("com.wiki.framework.web.client.rest.template.Proxy.test.service")
 public class Application {
 
-	@Bean
-	@Primary
-	@LoadBalanced
-	public RestTemplate restTemplate(ClientHttpRequestFactory clientHttpRequestFactory) {
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.setRequestFactory(clientHttpRequestFactory);
-		return restTemplate;
-	}
+
 }
