@@ -4,7 +4,7 @@ import com.wiki.framework.common.context.ThreadStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SystemContext {
+public abstract class SystemContext {
 
 	private static Logger logger = LoggerFactory.getLogger(SystemContext.class);
 
