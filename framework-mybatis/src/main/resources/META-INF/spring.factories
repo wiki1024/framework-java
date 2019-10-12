@@ -1,0 +1,5 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.wiki.framework.mybatis.autoconfig.MybatisListenerAutoConfiguration,\
+com.wiki.framework.mybatis.autoconfig.ChainedMybatisInterceptorConfiguration,\
+com.wiki.framework.mybatis.autoconfig.PageHelperAutoConfiguration
