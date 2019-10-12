@@ -74,7 +74,6 @@ public class ServiceProxyFactoryBean<T> implements FactoryBean<T>, MethodInterce
 		httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON_UTF8));
 		Annotation[][] arrays = method.getParameterAnnotations();
 		Object httpBody = null;
-//		NotNullMap<String, Object> requestParams = new NotNullMap<>();
 		NotNullMap<String, Object> uriParams = new NotNullMap<>();
 		int argIndex = 0;
 		for (Annotation[] annotations : arrays) {
@@ -98,11 +97,9 @@ public class ServiceProxyFactoryBean<T> implements FactoryBean<T>, MethodInterce
 					boolean required = param.required();
 					if (argument == null) {
 						if (required) {
-//							requestParams.put(name, defaultValue);
 							uriParams.put(name, defaultValue);
 						}
 					} else {
-//						requestParams.put(name, argument);
 						uriParams.put(name, argument);
 					}
 				} else if (annotation instanceof RequestHeader) {
@@ -117,7 +114,6 @@ public class ServiceProxyFactoryBean<T> implements FactoryBean<T>, MethodInterce
 					}
 				} else if (annotation instanceof ModelAttribute) {
 					Map<String, Object> map = object2Map(argument);
-//					requestParams.putAll(map);
 					uriParams.putAll(map);
 				} else if (annotation instanceof RequestPart) {
 					String name = ((RequestPart) annotation).name();
@@ -148,10 +144,6 @@ public class ServiceProxyFactoryBean<T> implements FactoryBean<T>, MethodInterce
 			ResponseEntity<Object> exchange = serviceProfile.getRestTemplate()
 					.exchange(requestUrl, serviceProfile.getHttpMethod(), httpEntity, typeReference, pair.getRight());
 			object = exchange.getBody();
-			if (logger.isDebugEnabled()) {
-				long cost = System.currentTimeMillis() - start;
-				logger.debug(String.format("请求微服务，URL：%s，消耗时间(ms)：%d", requestUrl, cost));
-			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw new BusinessException(new ErrorInfo(ErrorCode.ServerError.getErrorCode(), "fail:" + e.getMessage()));
