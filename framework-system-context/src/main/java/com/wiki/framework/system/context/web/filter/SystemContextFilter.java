@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 
@@ -27,7 +28,11 @@ public class SystemContextFilter implements javax.servlet.Filter {
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
+		fillContext(request);
+		filterChain.doFilter(servletRequest, servletResponse);
+	}
 
+	private void fillContext(HttpServletRequest request) throws UnsupportedEncodingException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("system context init");
 		}

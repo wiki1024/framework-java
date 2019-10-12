@@ -5,7 +5,6 @@ import com.wiki.framework.common.dto.ErrorInfo;
 import com.wiki.framework.common.error.BusinessException;
 import com.wiki.framework.common.error.ErrorCode;
 import com.wiki.framework.common.util.ReflectionUtils;
-import com.wiki.framework.web.client.rest.template.Factory.ClientHttpRequestFactoryBuilder;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.collections.CollectionUtils;

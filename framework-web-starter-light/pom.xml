@@ -18,11 +18,11 @@
         </dependency>
         <dependency>
             <groupId>com.wiki.framework</groupId>
-            <artifactId>framework-mybatis</artifactId>
+            <artifactId>framework-system-context</artifactId>
         </dependency>
         <dependency>
             <groupId>com.wiki.framework</groupId>
-            <artifactId>framework-system-context</artifactId>
+            <artifactId>framework-mybatis</artifactId>
         </dependency>
         <dependency>
             <groupId>com.wiki.framework</groupId>
@@ -35,7 +35,6 @@
         <dependency>
             <groupId>com.wiki.framework</groupId>
             <artifactId>framework-web-client-rest-template</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
