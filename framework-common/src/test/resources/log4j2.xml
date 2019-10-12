@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name="PID"></Property>
+        <Property name="APP_NAME">test</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout header="${java:runtime} - ${java:vm} - ${java:os}"
+                    pattern="%clr{%d{yyyy-MM-dd HH:mm:ss.SSS}}{faint} %clr{%5p} %clr{${sys:APP_NAME}}{magenta}  %clr{${sys:PID}}{magenta} %clr{---}{faint} %clr{[%30.30t]}{faint} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m %clr{:}{faint} %X%n%throwable"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <!--<Logger name="org.apache.http" level="debug"  additivity="false">-->
+            <!--<AppenderRef ref="Console"/>-->
+        <!--</Logger>-->
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <!--<AppenderRef ref="RollingFile_Appender"/>-->
+        </Root>
+    </Loggers>
+</Configuration>

@@ -24,11 +24,12 @@ import java.util.Map;
 public class SystemContextHttpClientHeaderInjector implements ClientHttpRequestInterceptor {
 
 	private static Logger logger = LoggerFactory.getLogger(SystemContextHttpClientHeaderInjector.class);
+
 	@Override
 	public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes, ClientHttpRequestExecution execution) throws IOException {
 		HttpHeaders headers = httpRequest.getHeaders();
 		addSystemContextToHeader(headers);
-		return execution.execute(httpRequest,bytes);
+		return execution.execute(httpRequest, bytes);
 	}
 
 	/**
@@ -43,17 +44,22 @@ public class SystemContextHttpClientHeaderInjector implements ClientHttpRequestI
 		if (headers == null) {
 			return;
 		}
-		Map<String, String> contextMap = ThreadStore.getContextMap();
-		if (contextMap == null) {
-			return;
+
+		List<Pair<String, String>> pairs = convertSystemContext(ThreadStore.getContextMap());
+		if (CollectionUtils.isNotEmpty(pairs)) {
+			pairs.forEach(pair -> {
+				headers.add(pair.getKey(), pair.getValue());
+			});
+
 		}
-		List<Pair<String, String>> pairs = convertSystemContext();
-		if (CollectionUtils.isEmpty(pairs)) {
-			return;
+
+		pairs = convertSystemContext(ThreadStore.getIdMap());
+		if (CollectionUtils.isNotEmpty(pairs)) {
+			pairs.forEach(pair -> {
+				headers.add(pair.getKey(), pair.getValue());
+			});
 		}
-		pairs.forEach(pair -> {
-			headers.add(pair.getKey(), pair.getValue());
-		});
+
 	}
 
 	/**
@@ -78,8 +84,7 @@ public class SystemContextHttpClientHeaderInjector implements ClientHttpRequestI
 		}
 	}
 
-	public static List<Pair<String, String>> convertSystemContext() {
-		Map<String, String> contextMap = ThreadStore.getContextMap();
+	public static List<Pair<String, String>> convertSystemContext(Map<String, String> contextMap) {
 		if (contextMap == null) {
 			return Collections.emptyList();
 		}
