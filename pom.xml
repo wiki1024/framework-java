@@ -13,6 +13,8 @@
         <module>framework-mybatis</module>
         <module>framework-web</module>
         <module>framework-system-context</module>
+        <module>framework-ribbon-eureka</module>
+        <module>framework-web-client-rest-template</module>
     </modules>
 
     <properties>
@@ -28,6 +30,17 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter</artifactId>
+                <version>2.1.9.RELEASE</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
                 <groupId>com.wiki.framework</groupId>
                 <artifactId>framework-common</artifactId>
                 <version>${framework.version}</version>
@@ -35,6 +48,11 @@
             <dependency>
                 <groupId>com.wiki.framework</groupId>
                 <artifactId>framework-web</artifactId>
+                <version>${framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wiki.framework</groupId>
+                <artifactId>framework-ribbon-eureka</artifactId>
                 <version>${framework.version}</version>
             </dependency>
             <dependency>

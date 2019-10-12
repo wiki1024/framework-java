@@ -1,3 +1,4 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.wiki.framework.common.autoconfig.CommonMapperAutoConfiguration
+com.wiki.framework.common.autoconfig.CommonMapperAutoConfiguration,\
+com.wiki.framework.common.autoconfig.FrameworkCommonAutoConfiguration
