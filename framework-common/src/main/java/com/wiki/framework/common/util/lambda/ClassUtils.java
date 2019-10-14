@@ -37,9 +37,9 @@ final class ClassUtils {
 	/**
 	 * 代理 class 的名称
 	 */
-	private static final List<String> PROXY_CLASS_NAMES = Arrays.asList("net.sf.cglib.proxy.Factory"
+	private static final List<String> PROXY_CLASS_NAMES = Arrays.asList("net.sf.cglib.proxy.factory"
 			// cglib
-			, "org.springframework.cglib.proxy.Factory"
+			, "org.springframework.cglib.proxy.factory"
 			, "javassist.util.proxy.ProxyObject"
 			// javassist
 			, "org.apache.ibatis.javassist.util.proxy.ProxyObject");

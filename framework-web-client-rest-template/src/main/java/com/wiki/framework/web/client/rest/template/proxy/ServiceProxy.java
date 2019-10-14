@@ -1,4 +1,4 @@
-package com.wiki.framework.web.client.rest.template.Proxy;
+package com.wiki.framework.web.client.rest.template.proxy;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,4 @@
-package com.wiki.framework.web.client.rest.template.Proxy;
+package com.wiki.framework.web.client.rest.template.proxy;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;

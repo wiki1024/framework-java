@@ -1,4 +1,4 @@
-package com.wiki.framework.web.client.rest.template.Proxy.test.service;
+package com.wiki.framework.web.client.rest.template.proxy.test.service;
 
 import lombok.ToString;
 

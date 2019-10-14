@@ -1,7 +1,7 @@
-package com.wiki.framework.web.client.rest.template.Proxy.test.service;
+package com.wiki.framework.web.client.rest.template.proxy.test.service;
 
 import com.wiki.framework.common.dto.ActionResult;
-import com.wiki.framework.web.client.rest.template.Proxy.ServiceProxy;
+import com.wiki.framework.web.client.rest.template.proxy.ServiceProxy;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 

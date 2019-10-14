@@ -1,4 +1,4 @@
-package com.wiki.framework.web.client.rest.template.Proxy;
+package com.wiki.framework.web.client.rest.template.proxy;
 
 import java.util.HashMap;
 import java.util.Map;

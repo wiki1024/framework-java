@@ -1,4 +1,4 @@
-package com.wiki.framework.web.client.rest.template.Proxy;
+package com.wiki.framework.web.client.rest.template.proxy;
 
 import com.wiki.framework.common.dto.ActionResult;
 import com.wiki.framework.common.dto.ErrorInfo;

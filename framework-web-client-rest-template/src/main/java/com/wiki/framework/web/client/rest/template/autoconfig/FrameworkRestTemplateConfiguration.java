@@ -1,6 +1,6 @@
 package com.wiki.framework.web.client.rest.template.autoconfig;
 
-import com.wiki.framework.web.client.rest.template.Factory.ClientHttpRequestFactoryBuilder;
+import com.wiki.framework.web.client.rest.template.factory.ClientHttpRequestFactoryBuilder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;

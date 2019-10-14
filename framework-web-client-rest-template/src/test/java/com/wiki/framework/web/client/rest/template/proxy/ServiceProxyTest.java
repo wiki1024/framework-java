@@ -1,9 +1,9 @@
-package com.wiki.framework.web.client.rest.template.Proxy;
+package com.wiki.framework.web.client.rest.template.proxy;
 
 import com.wiki.framework.common.context.ThreadStore;
 import com.wiki.framework.common.dto.ActionResult;
-import com.wiki.framework.web.client.rest.template.Proxy.test.service.ApplicationProxyDTO;
-import com.wiki.framework.web.client.rest.template.Proxy.test.service.OmpService;
+import com.wiki.framework.web.client.rest.template.proxy.test.service.ApplicationProxyDTO;
+import com.wiki.framework.web.client.rest.template.proxy.test.service.OmpService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -15,8 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 
 @RunWith(SpringRunner.class)
