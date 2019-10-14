@@ -19,6 +19,11 @@
         </dependency>
         <dependency>
             <groupId>com.wiki.framework</groupId>
+            <artifactId>framework-mybatis</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.wiki.framework</groupId>
             <artifactId>framework-web</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -27,5 +32,13 @@
             <artifactId>framework-ribbon-eureka</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <!--test-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!--test-->
     </dependencies>
 </project>

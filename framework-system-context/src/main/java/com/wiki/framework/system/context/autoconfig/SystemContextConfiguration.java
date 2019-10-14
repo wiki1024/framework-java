@@ -1,5 +1,9 @@
 package com.wiki.framework.system.context.autoconfig;
 
+import com.wiki.framework.mybatis.mybatis.BaseMapper;
+import com.wiki.framework.mybatis.mybatis.listener.MybatisListenerContainer;
+import com.wiki.framework.system.context.mybatis.Listener.*;
+import com.wiki.framework.system.context.mybatis.SystemContextListenerRegisteredEvent;
 import com.wiki.framework.system.context.web.client.SystemContextHttpClientHeaderInjector;
 import com.wiki.framework.system.context.web.filter.SystemContextFilter;
 import org.springframework.beans.factory.InitializingBean;
@@ -11,8 +15,10 @@ import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
 
@@ -39,6 +45,7 @@ public class SystemContextConfiguration {
 	}
 
 	@Configuration
+	@Order
 	@ConditionalOnClass({ClientHttpRequestInterceptor.class, RestTemplate.class})
 	public static class SystemContextHttpClientInterceptor {
 
@@ -59,6 +66,27 @@ public class SystemContextConfiguration {
 					list.add(systemContextHttpClientHeaderInjector);
 					restTemplate.setInterceptors(list);
 				}
+			};
+		}
+
+	}
+
+	@Configuration
+	@ConditionalOnClass(BaseMapper.class)
+	public static class SystemContextMybatisAutoConfiguration {
+
+		@Autowired
+		private ApplicationEventPublisher applicationEventPublisher;
+
+		@Bean
+		public InitializingBean injectSystemContextMybatisListener() {
+			return () -> {
+				MybatisListenerContainer.registListener(new BasePOPreInsertListener());
+				MybatisListenerContainer.registListener(new BasePOQueryListener());
+				MybatisListenerContainer.registListener(new BasePODeleteListener());
+				MybatisListenerContainer.registListener(new UserIdPOPreUpdateListener());
+				MybatisListenerContainer.registListener(new UserIdPreInsertListener());
+				applicationEventPublisher.publishEvent(new SystemContextListenerRegisteredEvent(this));
 			};
 		}
 

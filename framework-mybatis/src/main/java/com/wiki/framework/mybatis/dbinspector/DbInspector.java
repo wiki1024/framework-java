@@ -141,7 +141,7 @@ public class DbInspector {
 					connection.setAutoCommit(false);
 					processOneTable(connection, table, ddlList);
 				} catch (Exception e) {
-					throw new RuntimeException("error process table:" + table.toString(), e);
+					logger.error("error process table", e);
 				} finally {
 					latch.countDown();
 				}

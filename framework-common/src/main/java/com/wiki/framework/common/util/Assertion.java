@@ -1,6 +1,7 @@
 package com.wiki.framework.common.util;
 
 import com.wiki.framework.common.dto.ErrorInfo;
+import com.wiki.framework.common.error.BaseErrorCode;
 import com.wiki.framework.common.error.ErrorCode;
 import com.wiki.framework.common.error.RuntimeExecException;
 
@@ -18,4 +19,17 @@ public class Assertion {
 			throw RuntimeExecException.fromError(errorInfo);
 		}
 	}
+
+	public static void isTrue(boolean expression, BaseErrorCode errorCode) {
+		if (!expression) {
+			throw RuntimeExecException.fromError(errorCode.toError());
+		}
+	}
+
+	public static void isTrue(boolean expression, BaseErrorCode errorCode, Object... args) {
+		if (!expression) {
+			throw RuntimeExecException.fromError(errorCode.toError(args));
+		}
+	}
+
 }

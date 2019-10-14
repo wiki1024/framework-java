@@ -1,16 +1,18 @@
-package com.wiki.framework.mybatis.mybatis.listener.impl;
+package com.wiki.framework.system.context.mybatis.Listener;
 
 import com.wiki.framework.common.util.StringUtil;
 import com.wiki.framework.common.util.UUIDUtils;
+import com.wiki.framework.mybatis.mybatis.listener.impl.CommonPOPreInsertListener;
 import com.wiki.framework.mybatis.mybatis.listener.spi.AbstractPOUpdateListener;
 import com.wiki.framework.mybatis.mybatis.listener.spi.POUpdateListener;
 import com.wiki.framework.mybatis.po.CommonPO;
+import com.wiki.framework.system.context.SystemContext;
 
 import java.util.Date;
 
-public class CommonPOPreInsertListener extends AbstractPOUpdateListener implements POUpdateListener.Insert, POUpdateListener.Pre {
+public class UserIdPreInsertListener extends AbstractPOUpdateListener implements POUpdateListener.Insert, POUpdateListener.Pre {
 
-	public static final int Order = Integer.MIN_VALUE;
+	public static final int Order = CommonPOPreInsertListener.Order;
 
 	@Override
 	public int getOrder() {
@@ -24,17 +26,9 @@ public class CommonPOPreInsertListener extends AbstractPOUpdateListener implemen
 
 	@Override
 	protected void doApply(CommonPO po) {
-		if (StringUtil.isBlank(po.getId())) {
-			po.setId(UUIDUtils.getUUID());
+		if (po.getCreateBy() == null) {
+			po.setCreateBy(SystemContext.getUserId());
 		}
-		po.setVersion(0L);
-		if (po.getCreateTime() == null) {
-			po.setCreateTime(new Date());
-		}
-		if (po.getUpdateTime() == null) {
-			po.setUpdateTime(new Date());
-		}
-		po.setIsDeleted(0);
 	}
-
+	
 }

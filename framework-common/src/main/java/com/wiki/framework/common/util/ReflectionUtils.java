@@ -496,6 +496,29 @@ public class ReflectionUtils {
 		return false;
 	}
 
+	/**
+	 * 检查一个类是否实现了某个接口
+	 *
+	 * @param clazz1 实现类
+	 * @param clazz2 接口
+	 * @return true 实现了接口 false 未实现该接口
+	 */
+	public static boolean isInterfaceOfRecur(Class clazz1, Class clazz2) {
+		Class[] interfaces = clazz1.getInterfaces();
+		if (interfaces != null && interfaces.length > 0) {
+			for (Class anInterface : interfaces) {
+				if (anInterface.getName().equals(clazz2.getName())) {
+					return true;
+				}
+			}
+		}
+		Class parent = clazz1.getSuperclass();
+		while (parent != null) {
+			return isInterfaceOfRecur(parent, clazz2);
+		}
+		return false;
+	}
+
 	public static String buildMethodSignature(Class<?> clazz, String methodName, Class<?>[] parameterTypes) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(clazz.getName());

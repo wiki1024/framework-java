@@ -1,8 +1,7 @@
 package com.wiki.framework.common.error;
 
-import com.wiki.framework.common.dto.ErrorInfo;
 
-public enum ErrorCode {
+public enum ErrorCode implements BaseErrorCode {
 	ServerError("500", "server error"),
 
 
@@ -18,27 +17,14 @@ public enum ErrorCode {
 		this.message = message;
 	}
 
+
+	@Override
 	public String getErrorCode() {
 		return errorCode;
 	}
 
-	public String getMessage() {
+	@Override
+	public String getMeessage() {
 		return message;
-	}
-
-	public ErrorInfo toError() {
-		return new ErrorInfo(errorCode, message);
-	}
-
-	public ErrorInfo toError(Object... args) {
-		return ErrorInfo.create(errorCode, message, args);
-	}
-
-	public RuntimeExecException toException() {
-		return RuntimeExecException.fromError(toError());
-	}
-
-	public RuntimeExecException toException(Object... args) {
-		return RuntimeExecException.fromError(toError(args));
 	}
 }

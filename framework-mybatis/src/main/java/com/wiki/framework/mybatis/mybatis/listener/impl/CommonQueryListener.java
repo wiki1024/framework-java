@@ -1,7 +1,7 @@
 package com.wiki.framework.mybatis.mybatis.listener.impl;
 
 import com.wiki.framework.common.util.Assertion;
-import com.wiki.framework.mybatis.mybatis.ErrorCode;
+import com.wiki.framework.mybatis.mybatis.OrmErrorCode;
 import com.wiki.framework.mybatis.mybatis.listener.spi.AbstractCriteriaUpdateListener;
 import com.wiki.framework.mybatis.query.v2.Criteria;
 import com.wiki.framework.mybatis.query.v2.Operator;
@@ -26,9 +26,9 @@ public class CommonQueryListener extends AbstractCriteriaUpdateListener {
 
 	@Override
 	protected void doApply(Class<?> clazz, Criteria criteria,  Map<String, Object> map) {
-		Assertion.isTrue(criteria != null, ErrorCode.NullCriteria.toError(clazz));
+		Assertion.isTrue(criteria != null, OrmErrorCode.NullCriteria.toError(clazz));
 		//prevent 脱表
-		Assertion.isTrue(CollectionUtils.isNotEmpty(criteria.getConditions()), ErrorCode.NoConditionPresented.toError(clazz));
+		Assertion.isTrue(CollectionUtils.isNotEmpty(criteria.getConditions()), OrmErrorCode.NoConditionPresented.toError(clazz));
 		criteria.and("isDeleted", Operator.equal, "0");
 	}
 

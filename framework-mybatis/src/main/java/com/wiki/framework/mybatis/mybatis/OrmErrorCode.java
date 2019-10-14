@@ -3,7 +3,7 @@ package com.wiki.framework.mybatis.mybatis;
 import com.wiki.framework.common.dto.ErrorInfo;
 import com.wiki.framework.common.error.RuntimeExecException;
 
-public enum ErrorCode {
+public enum OrmErrorCode {
 	//mysql error
 	OptimisticLockError("0005_0001", "OptimisticLockError po {}, id {}, intent version {}"),
 	//orm error
@@ -16,7 +16,7 @@ public enum ErrorCode {
 	String errorCode;
 	String message;
 
-	ErrorCode(String errorCode, String message) {
+	OrmErrorCode(String errorCode, String message) {
 		this.errorCode = errorCode;
 		this.message = message;
 	}
