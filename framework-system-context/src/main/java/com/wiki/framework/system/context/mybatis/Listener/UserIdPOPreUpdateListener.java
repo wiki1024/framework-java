@@ -12,6 +12,11 @@ public class UserIdPOPreUpdateListener extends AbstractPOUpdateListener implemen
 	public static final int Order = Integer.MIN_VALUE;
 
 	@Override
+	public int getOrder() {
+		return Order;
+	}
+
+	@Override
 	public boolean shouldApply(CommonPO po) {
 		return po != null;
 	}
@@ -21,10 +26,5 @@ public class UserIdPOPreUpdateListener extends AbstractPOUpdateListener implemen
 		if (po.getUpdateBy() == null) {
 			po.setUpdateBy(SystemContext.getUserId());
 		}
-	}
-
-	@Override
-	public int getOrder() {
-		return Order;
 	}
 }

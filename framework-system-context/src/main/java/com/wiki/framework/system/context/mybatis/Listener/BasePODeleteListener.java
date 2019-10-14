@@ -12,7 +12,6 @@ import com.wiki.framework.system.context.SystemContext;
 import com.wiki.framework.system.context.error.SystemContextErrorCode;
 import com.wiki.framework.system.context.mybatis.po.TenantPO;
 
-import java.util.Date;
 import java.util.Map;
 
 public class BasePODeleteListener extends AbstractCriteriaUpdateListener implements CriteriaUpdateListener.Delete {
@@ -27,7 +26,7 @@ public class BasePODeleteListener extends AbstractCriteriaUpdateListener impleme
 
 	@Override
 	protected boolean shouldApply(Class<?> clazz) {
-		return ReflectionUtils.isInterfaceOf(clazz, TenantPO.class);
+		return ReflectionUtils.isInterfaceOfRecur(clazz, TenantPO.class);
 	}
 
 	@Override
