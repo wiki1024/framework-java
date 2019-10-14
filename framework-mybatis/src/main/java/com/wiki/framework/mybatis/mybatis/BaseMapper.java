@@ -3,11 +3,13 @@ package com.wiki.framework.mybatis.mybatis;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wiki.framework.common.dto.PageResponse;
+import com.wiki.framework.common.util.Assertion;
 import com.wiki.framework.common.util.StringUtil;
 import com.wiki.framework.common.util.lambda.SFunction;
 
 import com.wiki.framework.mybatis.mybatis.listener.MybatisListenerContainer;
-import com.wiki.framework.mybatis.mybatis.listener.spi.*;
+import com.wiki.framework.mybatis.mybatis.listener.spi.CriteriaUpdateListener;
+import com.wiki.framework.mybatis.mybatis.listener.spi.POUpdateListener;
 import com.wiki.framework.mybatis.mybatis.util.BaseMapperUtil;
 import com.wiki.framework.mybatis.po.CommonPO;
 import com.wiki.framework.mybatis.query.PageRequest;
@@ -32,21 +34,14 @@ public interface BaseMapper<T extends CommonPO> {
 	/*******************************插入方法********************************/
 	default int insert(T po) {
 		//pre insert listener 处理
-		List<PreInsertListener> preInsertListeners = MybatisListenerContainer.getPreInsertListeners();
+		List<POUpdateListener> preInsertListeners = MybatisListenerContainer.getPreInsertListeners();
 		if (CollectionUtils.isNotEmpty(preInsertListeners)) {
-			for (PreInsertListener preInsertListener : preInsertListeners) {
-				boolean execute = preInsertListener.preInsert(po);
-				if (!execute) {
-					return 0;
-				}
+			for (POUpdateListener preInsertListener : preInsertListeners) {
+				preInsertListener.apply(po);
 			}
 		}
 		int rows = _insert(po);
-		//post insert listener 处理
-		List<PostInsertListener> postInsertListeners = MybatisListenerContainer.getPostInsertListeners();
-		if (CollectionUtils.isNotEmpty(postInsertListeners)) {
-			postInsertListeners.forEach(postInsertListener -> postInsertListener.postInsert(po));
-		}
+		//todo post insert listener 处理
 		return rows;
 	}
 
@@ -61,26 +56,17 @@ public interface BaseMapper<T extends CommonPO> {
 		if (poList == null || poList.size() == 0) {
 			return 0;
 		}
-		List<PreInsertListener> preInsertListeners = MybatisListenerContainer.getPreInsertListeners();
+		List<POUpdateListener> preInsertListeners = MybatisListenerContainer.getPreInsertListeners();
 		//pre insert listener 处理
 		if (CollectionUtils.isNotEmpty(preInsertListeners)) {
-			for (PreInsertListener preInsertListener : preInsertListeners) {
-				boolean result = true;
+			for (POUpdateListener preInsertListener : preInsertListeners) {
 				for (T t : poList) {
-					boolean execute = preInsertListener.preInsert(t);
-					result = execute && result;
-				}
-				if (!result) {
-					return 0;
+					preInsertListener.apply(t);
 				}
 			}
 		}
 		int rows = _batchInsert(poList, new HashMap<>());
-		//post insert listener 处理
-		List<PostInsertListener> postInsertListeners = MybatisListenerContainer.getPostInsertListeners();
-		if (CollectionUtils.isNotEmpty(postInsertListeners)) {
-			postInsertListeners.forEach(postInsertListener -> poList.forEach(postInsertListener::postInsert));
-		}
+		//todo post insert listener 处理
 		return rows;
 	}
 
@@ -93,14 +79,11 @@ public interface BaseMapper<T extends CommonPO> {
 	}
 
 	default int update(T po, String... columns) {
-		List<PreUpdateListener> preUpdateListeners = MybatisListenerContainer.getPreUpdateListeners();
+		List<POUpdateListener> prePOUpdateListeners = MybatisListenerContainer.getPrePOUpdateListeners();
 		//pre update listener 处理
-		if (CollectionUtils.isNotEmpty(preUpdateListeners)) {
-			for (PreUpdateListener preInsertListener : preUpdateListeners) {
-				boolean execute = preInsertListener.preUpdate(po);
-				if (!execute) {
-					return 0;
-				}
+		if (CollectionUtils.isNotEmpty(prePOUpdateListeners)) {
+			for (POUpdateListener preInsertListener : prePOUpdateListeners) {
+				preInsertListener.apply(po);
 			}
 		}
 		Set<String> includeColumns = null;
@@ -112,10 +95,6 @@ public interface BaseMapper<T extends CommonPO> {
 		int rows = _doUpdate(po, includeColumns);
 
 		//post update listener 处理
-		List<PostUpdateListener> postUpdateListeners = MybatisListenerContainer.getPostUpdateListeners();
-		if (CollectionUtils.isNotEmpty(postUpdateListeners)) {
-			postUpdateListeners.forEach(postUpdateListener -> postUpdateListener.postUpdate(po));
-		}
 		return rows;
 	}
 
@@ -135,27 +114,20 @@ public interface BaseMapper<T extends CommonPO> {
 	 * @return
 	 */
 	default int updateSelective(T po, String... columns) {
-		List<PreUpdateListener> preUpdateListeners = MybatisListenerContainer.getPreUpdateListeners();
+		List<POUpdateListener> prePOUpdateListeners = MybatisListenerContainer.getPrePOUpdateListeners();
 		//pre update listener 处理
-		if (CollectionUtils.isNotEmpty(preUpdateListeners)) {
-			for (PreUpdateListener preInsertListener : preUpdateListeners) {
-				boolean execute = preInsertListener.preUpdate(po);
-				if (!execute) {
-					return 0;
-				}
+		if (CollectionUtils.isNotEmpty(prePOUpdateListeners)) {
+			for (POUpdateListener preInsertListener : prePOUpdateListeners) {
+				preInsertListener.apply(po);
 			}
 		}
 		Set<String> includeColumns = null;
 		if (columns != null && columns.length > 0) {
 			includeColumns = new HashSet<>(Arrays.asList(columns));
 		}
-		int rows = _doUpdateSelective(po,  includeColumns);
+		int rows = _doUpdateSelective(po, includeColumns);
 
 		//post update listener 处理
-		List<PostUpdateListener> postUpdateListeners = MybatisListenerContainer.getPostUpdateListeners();
-		if (CollectionUtils.isNotEmpty(postUpdateListeners)) {
-			postUpdateListeners.forEach(postUpdateListener -> postUpdateListener.postUpdate(po));
-		}
 		return rows;
 	}
 
@@ -167,17 +139,13 @@ public interface BaseMapper<T extends CommonPO> {
 		if (poList == null || poList.size() == 0) {
 			return 0;
 		}
-		List<PreUpdateListener> preUpdateListeners = MybatisListenerContainer.getPreUpdateListeners();
+		List<POUpdateListener> prePOUpdateListeners = MybatisListenerContainer.getPrePOUpdateListeners();
 		//pre update listener 处理
-		if (CollectionUtils.isNotEmpty(preUpdateListeners)) {
-			for (PreUpdateListener preInsertListener : preUpdateListeners) {
+		if (CollectionUtils.isNotEmpty(prePOUpdateListeners)) {
+			for (POUpdateListener preInsertListener : prePOUpdateListeners) {
 				boolean result = true;
 				for (T t : poList) {
-					boolean execute = preInsertListener.preUpdate(t);
-					result = result && execute;
-				}
-				if (!result) {
-					return 0;
+					preInsertListener.apply(t);
 				}
 			}
 		}
@@ -188,12 +156,6 @@ public interface BaseMapper<T extends CommonPO> {
 			includeColumnSet.addAll(Arrays.asList(includeColumns));
 		}
 		int rows = _batchUpdateSelective(entityClass, poList, includeColumnSet);
-
-		//post insert listener 处理
-		List<PostUpdateListener> postUpdateListeners = MybatisListenerContainer.getPostUpdateListeners();
-		if (CollectionUtils.isNotEmpty(postUpdateListeners)) {
-			postUpdateListeners.forEach(postUpdateListener -> poList.forEach(postUpdateListener::postUpdate));
-		}
 		return rows;
 	}
 
@@ -204,17 +166,13 @@ public interface BaseMapper<T extends CommonPO> {
 		if (poList == null || poList.size() == 0) {
 			return 0;
 		}
-		List<PreUpdateListener> preUpdateListeners = MybatisListenerContainer.getPreUpdateListeners();
+		List<POUpdateListener> prePOUpdateListeners = MybatisListenerContainer.getPrePOUpdateListeners();
 		//pre update listener 处理
-		if (CollectionUtils.isNotEmpty(preUpdateListeners)) {
-			for (PreUpdateListener preInsertListener : preUpdateListeners) {
+		if (CollectionUtils.isNotEmpty(prePOUpdateListeners)) {
+			for (POUpdateListener preInsertListener : prePOUpdateListeners) {
 				boolean result = true;
 				for (T t : poList) {
-					boolean execute = preInsertListener.preUpdate(t);
-					result = result && execute;
-				}
-				if (!result) {
-					return 0;
+					preInsertListener.apply(t);
 				}
 			}
 		}
@@ -229,10 +187,6 @@ public interface BaseMapper<T extends CommonPO> {
 		int rows = _batchUpdate(entityClass, poList, includeColumns);
 
 		//post insert listener 处理
-		List<PostUpdateListener> postUpdateListeners = MybatisListenerContainer.getPostUpdateListeners();
-		if (CollectionUtils.isNotEmpty(postUpdateListeners)) {
-			postUpdateListeners.forEach(postUpdateListener -> poList.forEach(postUpdateListener::postUpdate));
-		}
 		return rows;
 	}
 
@@ -241,46 +195,27 @@ public interface BaseMapper<T extends CommonPO> {
 	int _delete(@Param("map") Map<String, Object> map, @Param("clazz") Class<T> clazz);
 
 	default int delete(String id) {
-		T po = null;
 		Class<T> entityClass = (Class<T>) ((ParameterizedType) getClass().getInterfaces()[0].getGenericInterfaces()[0]).getActualTypeArguments()[0];
-		//pre postDelete listener 处理
-		List<PreDeleteListener> preDeleteListeners = MybatisListenerContainer.getPreDeleteListeners();
-		if (CollectionUtils.isNotEmpty(preDeleteListeners)) {
-			po = get(id);
-			for (PreDeleteListener preInsertListener : preDeleteListeners) {
-				boolean execute = preInsertListener.preDelete(po);
-				if (!execute) {
-					return 0;
-				}
-			}
-		}
-		Criteria idCriteria = BaseMapperUtil.createIdCriteria(id);
-		int rows = deleteByCondition(idCriteria);
 
-		//post postDelete listener 处理
-		List<PostDeleteListener> postDeleteListeners = MybatisListenerContainer.getPostDeleteListeners();
-		if (CollectionUtils.isNotEmpty(postDeleteListeners)) {
-			if (po == null) {
-				po = get(id);
-			}
-			for (PostDeleteListener postDeleteListener : postDeleteListeners) {
-				postDeleteListener.postDelete(po);
-			}
-		}
+		Criteria idCriteria = BaseMapperUtil.createIdCriteria(id);
+		int rows = deleteByCriteria(idCriteria);
+
 		return rows;
 	}
 
 
 	/*******************************按照查询条件删除********************************/
 	@DeleteProvider(type = MybatisSqlBuilder.class, method = "deleteByCriteria")
-	int _deleteByCondition(@Param("clazz") Class<T> clazz, @Param("criteria") Criteria criteria, @Param("map") Map<String, Object> map);
+	int _deleteByCriteria(@Param("clazz") Class<T> clazz, @Param("criteria") Criteria criteria, @Param("map") Map<String, Object> map);
 
-	default int deleteByCondition(Criteria criteria) {
+	default int deleteByCriteria(Criteria criteria) {
 		Class<T> entityClass = (Class<T>) ((ParameterizedType) getClass().getInterfaces()[0].getGenericInterfaces()[0]).getActualTypeArguments()[0];
-		criteria.and("isDeleted", Operator.equal, "0");
 		Map<String, Object> map = new HashMap<>();
-		map.put("updateTime", new Date());
-		int rows = _deleteByCondition(entityClass, criteria, map);
+		List<CriteriaUpdateListener> queryListeners = MybatisListenerContainer.getDeleteListeners();
+		for (CriteriaUpdateListener queryListener : queryListeners) {
+			queryListener.apply(entityClass, criteria, map);
+		}
+		int rows = _deleteByCriteria(entityClass, criteria, map);
 		return rows;
 	}
 
@@ -303,27 +238,16 @@ public interface BaseMapper<T extends CommonPO> {
 	List<T> _findByCriteria(@Param("clazz") Class<T> clazz, @Param("criteria") Criteria criteria, @Param("map") Map<String, Object> map);
 
 	default List<T> findByCriteria(Criteria criteria) {
+		Assertion.isTrue(criteria != null, "criteria cannot be null");
 		Class<T> entityClass = (Class<T>) ((ParameterizedType) getClass().getInterfaces()[0].getGenericInterfaces()[0]).getActualTypeArguments()[0];
-//		if (ReflectionUtils.isSubClass(entityClass, BasePO.class)) {
-//			criteria.and("tenantId", Operator.equal, SystemContext.getTenantId());
-//		}
-//		if (ReflectionUtils.isSubClass(entityClass, BaseProjectPO.class)) {
-//			criteria.and("projectId", Operator.equal, SystemContext.getProjectId());
-//		}
-		criteria.and("isDeleted", Operator.equal, "0");
-		return _findByCriteria(entityClass, criteria, new HashMap<>());
+		List<CriteriaUpdateListener> queryListeners = MybatisListenerContainer.getQueryListeners();
+		HashMap<String, Object> _map = new HashMap<>();
+		for (CriteriaUpdateListener queryListener : queryListeners) {
+			queryListener.apply(entityClass, criteria, _map);
+		}
+		return _findByCriteria(entityClass, criteria, _map);
 	}
 
-	/**
-	 * 根据查询条件查询单个记录
-	 *
-	 * @param criteria 查询条件封装类
-	 * @return 记录
-	 */
-	default T findOne(Criteria criteria) {
-		List<T> list = findByCriteria(criteria);
-		return CollectionUtils.isEmpty(list) ? null : list.get(0);
-	}
 
 	/**
 	 * 分页查询对象
@@ -348,14 +272,20 @@ public interface BaseMapper<T extends CommonPO> {
 		return findByCriteria(and);
 	}
 
-	default List<T> findByProperty(String propName, Object propValue) {
-		Criteria criteria = new Criteria();
-		criteria.and(propName, Operator.equal, String.valueOf(propValue));
-		return findByCriteria(criteria);
+	/**
+	 * 根据查询条件查询单个记录
+	 *
+	 * @param criteria 查询条件封装类
+	 * @return 记录
+	 */
+	default T findOne(Criteria criteria) {
+		List<T> list = findByCriteria(criteria);
+		return CollectionUtils.isEmpty(list) ? null : list.get(0);
 	}
 
-	default T findOne(String propName, Object propValue) {
-		List<T> list = findByProperty(propName, propValue);
+
+	default T findOne(SFunction<T, ?> lambda, Object propValue) {
+		List<T> list = findByProperty(lambda, propValue);
 		return CollectionUtils.isEmpty(list) ? null : list.get(0);
 	}
 
@@ -364,14 +294,12 @@ public interface BaseMapper<T extends CommonPO> {
 
 	default Long countByCriteria(Criteria criteria) {
 		Class<T> entityClass = (Class<T>) ((ParameterizedType) getClass().getInterfaces()[0].getGenericInterfaces()[0]).getActualTypeArguments()[0];
-//		if (ReflectionUtils.isSubClass(entityClass, BasePO.class)) {
-//			criteria.and("tenantId", Operator.equal, SystemContext.getTenantId());
-//		}
-//		if (ReflectionUtils.isSubClass(entityClass, BaseProjectPO.class)) {
-//			criteria.and("projectId", Operator.equal, SystemContext.getProjectId());
-//		}
-		criteria.and("isDeleted", Operator.equal, "0");
-		return _countByCriteria(entityClass, criteria, new HashMap<>());
+		List<CriteriaUpdateListener> queryListeners = MybatisListenerContainer.getQueryListeners();
+		HashMap<String, Object> map = new HashMap<>();
+		for (CriteriaUpdateListener queryListener : queryListeners) {
+			queryListener.apply(entityClass, criteria, map);
+		}
+		return _countByCriteria(entityClass, criteria, map);
 	}
 
 	default boolean checkRepeat(String id, String propName, Object propValue) {

@@ -72,6 +72,15 @@ public class BaseMapperTest {
 	}
 
 	@Test
+	public void testUpdate() {
+		Subject ggg = subjectMapper.findOne(Subject::getName, "ggg");
+		int delete = subjectMapper.delete(ggg.getId());
+//		ggg.setIsDeleted(1);
+//		int updated = subjectMapper.update(ggg);
+		logger.info("{}", delete);
+	}
+
+	@Test
 	public void testFindTwo() {
 		Criteria c = Criteria.create()
 				.and(Subject::getName, Operator.equal, "ggg")

@@ -4,8 +4,14 @@ import com.wiki.framework.common.dto.ErrorInfo;
 import com.wiki.framework.common.error.RuntimeExecException;
 
 public enum ErrorCode {
+	//mysql error
+	OptimisticLockError("0005_0001", "OptimisticLockError po {}, id {}, intent version {}"),
+	//orm error
+	NoConditionPresented("0005_1001", "NoConditionPresented for class {}"),
+	NullCriteria("0005_1002", "NoConditionPresented for class {}"),
 
-	OptimisticLockError("0005_0001", "OptimisticLockError po {}, id {}, intent version {}");
+
+	;
 
 	String errorCode;
 	String message;

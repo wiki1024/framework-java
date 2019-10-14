@@ -2,6 +2,7 @@ package com.wiki.framework.mybatis.mybatis.listener;
 
 
 import com.wiki.framework.mybatis.mybatis.listener.spi.*;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -13,85 +14,74 @@ import java.util.List;
  * @since 2018/1/2 上午10:42
  */
 public class MybatisListenerContainer {
-    private static final Comparator<Integer> comparator = Comparator.nullsLast(Comparator.naturalOrder());
-	private static List<PreInsertListener> preInsertListeners;
-	private static List<PreUpdateListener> preUpdateListeners;
-	private static List<PreDeleteListener> preDeleteListeners;
-	private static List<PostInsertListener> postInsertListeners;
-	private static List<PostUpdateListener> postUpdateListeners;
-	private static List<PostDeleteListener> postDeleteListeners;
+	private static final Comparator<Integer> comparator = Comparator.nullsLast(Comparator.naturalOrder());
+	private static List<POUpdateListener> preInsertListeners = new ArrayList<>();
+	private static List<POUpdateListener> prePOUpdateListeners = new ArrayList<>();
 
-	public static void registListener(Object object) {
-		if (object instanceof PreInsertListener) {
-			if (preInsertListeners == null) {
-				preInsertListeners = new ArrayList<>();
-			}
-			preInsertListeners.add((PreInsertListener) object);
-            preInsertListeners.sort(Comparator.comparing(PreInsertListener::getOrder,comparator));
-        }
+	private static List<CriteriaUpdateListener> queryListeners = new ArrayList<>();
+	private static List<CriteriaUpdateListener> deleteListeners = new ArrayList<>();
 
-		if (object instanceof PreUpdateListener) {
-			if (preUpdateListeners == null) {
-				preUpdateListeners = new ArrayList<>();
-			}
-			preUpdateListeners.add((PreUpdateListener) object);
-            preUpdateListeners.sort(Comparator.comparing(PreUpdateListener::getOrder,comparator));
-        }
 
-		if (object instanceof PreDeleteListener) {
-			if (preDeleteListeners == null) {
-				preDeleteListeners = new ArrayList<>();
+	@SuppressWarnings("Duplicates")
+	public static void registListener(Object listener) {
+		if (listener instanceof POUpdateListener) {
+			POUpdateListener l = (POUpdateListener) listener;
+			if (l.type() == 1) {
+				//update
+				update(l, prePOUpdateListeners);
+			} else if (l.type() == 2) {
+				//insert
+				update(l, preInsertListeners);
+			} else {
+				throw new RuntimeException("POUpdateListener type invalid: " + l.type());
 			}
-			preDeleteListeners.add((PreDeleteListener) object);
-            preDeleteListeners.sort(Comparator.comparing(PreDeleteListener::getOrder,comparator));
-        }
-
-		if (object instanceof PostInsertListener) {
-			if (postInsertListeners == null) {
-				postInsertListeners = new ArrayList<>();
+		} else if (listener instanceof CriteriaUpdateListener) {
+			CriteriaUpdateListener l = (CriteriaUpdateListener) listener;
+			if (l.type() == 1) {
+				//query
+				update(l, queryListeners);
+			} else if (l.type() == 2) {
+				//insert
+				update(l, deleteListeners);
+			} else {
+				throw new RuntimeException("POUpdateListener type invalid: " + l.type());
 			}
-			postInsertListeners.add((PostInsertListener) object);
-            postInsertListeners.sort(Comparator.comparing(PostInsertListener::getOrder,comparator));
-        }
-
-		if (object instanceof PostUpdateListener) {
-			if (postUpdateListeners == null) {
-				postUpdateListeners = new ArrayList<>();
-			}
-			postUpdateListeners.add((PostUpdateListener) object);
-            postUpdateListeners.sort(Comparator.comparing(PostUpdateListener::getOrder,comparator));
-        }
-
-		if (object instanceof PostDeleteListener) {
-			if (postDeleteListeners == null) {
-				postDeleteListeners = new ArrayList<>();
-			}
-			postDeleteListeners.add((PostDeleteListener) object);
-            postDeleteListeners.sort(Comparator.comparing(PostDeleteListener::getOrder,comparator));
-        }
+		} else {
+			throw new RuntimeException("listener type invalid: " + listener.getClass());
+		}
 	}
 
-	public static List<PreInsertListener> getPreInsertListeners() {
+	private static void update(POUpdateListener l, List<POUpdateListener> listenerList) {
+		if (l.direction() > 0) {
+			listenerList.add(l);
+			listenerList.sort(Comparator.comparing(OrderedListener::getOrder, comparator));
+		} else if (l.direction() < 0) {
+			throw new NotImplementedException("post update not");
+		} else {
+			throw new NotImplementedException("all update not");
+		}
+	}
+
+	private static void update(CriteriaUpdateListener l, List<CriteriaUpdateListener> listenerList) {
+
+		listenerList.add(l);
+		listenerList.sort(Comparator.comparing(OrderedListener::getOrder, comparator));
+
+	}
+
+	public static List<POUpdateListener> getPreInsertListeners() {
 		return preInsertListeners;
 	}
 
-	public static List<PreUpdateListener> getPreUpdateListeners() {
-        return preUpdateListeners;
+	public static List<POUpdateListener> getPrePOUpdateListeners() {
+		return prePOUpdateListeners;
 	}
 
-	public static List<PreDeleteListener> getPreDeleteListeners() {
-        return preDeleteListeners;
+	public static List<CriteriaUpdateListener> getQueryListeners() {
+		return queryListeners;
 	}
 
-	public static List<PostInsertListener> getPostInsertListeners() {
-        return postInsertListeners;
-	}
-
-	public static List<PostUpdateListener> getPostUpdateListeners() {
-        return postUpdateListeners;
-	}
-
-	public static List<PostDeleteListener> getPostDeleteListeners() {
-        return postDeleteListeners;
+	public static List<CriteriaUpdateListener> getDeleteListeners() {
+		return deleteListeners;
 	}
 }

@@ -74,7 +74,7 @@ public interface BatchOperation {
 				if ((Objects.equals(providerMethod.getName(), "deleteByCriteria"))) {
 					return UpdateType.DeleteByCondition;
 				}
-				if ((Objects.equals(providerMethod.getName(), "deleteByCondition"))) {
+				if ((Objects.equals(providerMethod.getName(), "deleteByCriteria"))) {
 					return UpdateType.DeleteByCriteria;
 				}
 				if ((Objects.equals(providerMethod.getName(), "batchInsert") || Objects.equals(providerMethod.getName(), "_batchInsert"))) {

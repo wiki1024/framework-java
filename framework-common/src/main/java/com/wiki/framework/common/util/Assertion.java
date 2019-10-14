@@ -12,4 +12,10 @@ public class Assertion {
 			throw RuntimeExecException.fromError(errorInfo);
 		}
 	}
+
+	public static void isTrue(boolean expression, ErrorInfo errorInfo) {
+		if (!expression) {
+			throw RuntimeExecException.fromError(errorInfo);
+		}
+	}
 }
